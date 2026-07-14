@@ -208,17 +208,17 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
-        <div className="flex items-center justify-between px-4 py-3 lg:px-6">
-          <div className="flex items-center gap-3">
+        <div className="header-bar px-4 py-3 lg:px-6">
+          <div className="header-brand">
             <button className="icon-button lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open modules">
               <Menu size={20} />
             </button>
-            <div className="grid h-10 w-10 place-items-center rounded-md bg-emerald-700 text-white">
+            <div className="brand-mark grid h-10 w-10 place-items-center rounded-md bg-emerald-700 text-white">
               <Factory size={21} />
             </div>
-            <div>
-              <h1 className="text-base font-semibold leading-tight">Sitto Mobility Solutions</h1>
-              <p className="text-xs text-slate-500">Records produced from the supplied Sitto source data only</p>
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-semibold leading-tight">Sitto Mobility Solutions</h1>
+              <p className="header-subtitle text-xs text-slate-500">Records produced from the supplied Sitto source data only</p>
             </div>
           </div>
           <button className="button-secondary" onClick={() => window.print()}>
@@ -227,6 +227,7 @@ function App() {
         </div>
       </header>
 
+      {sidebarOpen && <button className="mobile-backdrop lg:hidden" aria-label="Close modules" onClick={() => setSidebarOpen(false)} />}
       <aside className={`sidebar ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div className="mb-4 flex items-center justify-between px-3 lg:hidden">
           <span className="font-semibold">Sections</span>
@@ -254,13 +255,13 @@ function App() {
         </nav>
       </aside>
 
-      <main className="min-w-0 px-4 py-5 lg:ml-72 lg:px-6">
-        <div className="mb-5 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div>
+      <main className="app-main min-w-0 px-4 py-5 lg:ml-72 lg:px-6">
+        <div className="page-heading mb-5">
+          <div className="min-w-0">
             <p className="text-sm font-medium text-emerald-700">{activeModule.label}</p>
-            <h2 className="text-2xl font-semibold tracking-tight">Source-only Sitto business records</h2>
+            <h2 className="page-title text-2xl font-semibold tracking-tight">Source-only Sitto business records</h2>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="export-actions">
             <button className="button-secondary" onClick={() => exportRows('csv')}>
               <Download size={16} /> CSV
             </button>
@@ -279,7 +280,7 @@ function App() {
         {active === 'dashboard' ? (
           <Dashboard metrics={metrics} records={records} setActive={setActive} />
         ) : (
-          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="content-grid grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
             <section className="space-y-5">
               <Toolbar query={query} setQuery={setQuery} filter={filter} setFilter={setFilter} />
               {renderModule(active, visibleRecords, records, metrics, editRecord, deleteRecord)}
@@ -308,7 +309,7 @@ function Dashboard({ metrics, records, setActive }: { metrics: ReturnType<typeof
 
   return (
     <div className="space-y-5">
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="metric-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map(([label, value, Icon, target]) => (
           <button className="metric-card text-left" key={label} onClick={() => setActive(target)}>
             <div className="flex items-center justify-between">
@@ -322,7 +323,7 @@ function Dashboard({ metrics, records, setActive }: { metrics: ReturnType<typeof
 
       <section className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
         <Panel title="Cash Book Movement">
-          <div className="h-80">
+          <div className="chart-frame h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={cashRows(records)}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -340,8 +341,8 @@ function Dashboard({ metrics, records, setActive }: { metrics: ReturnType<typeof
           <div className="space-y-3">
             {[...records].slice(-7).reverse().map((record) => (
               <div className="rounded-md border border-slate-200 p-3" key={record.id}>
-                <p className="text-sm font-medium">{record.date} · {record.description}</p>
-                <p className="text-xs text-slate-500">{record.ref} · {record.category} · {UGX.format(record.amount)}</p>
+                <p className="text-sm font-medium">{record.date} - {record.description}</p>
+                <p className="text-xs text-slate-500">{record.ref} - {record.category} - {UGX.format(record.amount)}</p>
               </div>
             ))}
           </div>
@@ -372,7 +373,7 @@ function renderModule(
 
 function Toolbar({ query, setQuery, filter, setFilter }: { query: string; setQuery: (value: string) => void; filter: string; setFilter: (value: string) => void }) {
   return (
-    <div className="grid gap-3 rounded-md border border-slate-200 bg-white p-3 md:grid-cols-[1fr_220px]">
+    <div className="toolbar-grid grid gap-3 rounded-md border border-slate-200 bg-white p-3 md:grid-cols-[1fr_220px]">
       <label className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={17} />
         <input className="input pl-10" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search date, reference, description, purpose, or category" />
@@ -425,7 +426,7 @@ function RecordForm({ form, setForm, saveRecord, editingId, setEditingId }: { fo
         <Field label="Description"><input className="input" value={form.description} onChange={(event) => update('description', event.target.value)} required /></Field>
         <Field label="Purpose"><input className="input" value={form.purpose} onChange={(event) => update('purpose', event.target.value)} /></Field>
         <Field label="Category"><input className="input" value={form.category} onChange={(event) => update('category', event.target.value)} required /></Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="form-grid grid grid-cols-2 gap-3">
           <Field label="Quantity"><input className="input" min="0" type="number" value={form.quantity} onChange={(event) => update('quantity', Number(event.target.value))} required /></Field>
           <Field label="Unit Price"><input className="input" min="0" type="number" value={form.unitPrice} onChange={(event) => update('unitPrice', Number(event.target.value))} required /></Field>
         </div>
@@ -445,7 +446,7 @@ function RecordForm({ form, setForm, saveRecord, editingId, setEditingId }: { fo
 function RecordTable({ records, editRecord, deleteRecord }: { records: SittoRecord[]; editRecord: (record: SittoRecord) => void; deleteRecord: (record: SittoRecord) => void }) {
   return (
     <Panel title="Register">
-      <div className="overflow-x-auto">
+      <div className="table-scroll overflow-x-auto">
         <table className="data-table">
           <thead><tr><th>Date</th><th>Ref</th><th>Description</th><th>Purpose</th><th>Category</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Actions</th></tr></thead>
           <tbody>
@@ -477,7 +478,7 @@ function RecordTable({ records, editRecord, deleteRecord }: { records: SittoReco
 function CashBook({ records }: { records: SittoRecord[] }) {
   return (
     <Panel title="Cash Book">
-      <div className="overflow-x-auto">
+      <div className="table-scroll overflow-x-auto">
         <table className="data-table">
           <thead><tr><th>Date</th><th>Particulars</th><th>Receipts</th><th>Payments</th><th>Balance</th></tr></thead>
           <tbody>
@@ -513,7 +514,7 @@ function BreakEven({ metrics }: { metrics: ReturnType<typeof calculateMetrics> }
   return (
     <Panel title="Break-even Analysis">
       <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
-        <div className="h-80">
+        <div className="chart-frame h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -551,13 +552,13 @@ function SimpleRows({ title, rows, totalLabel, total }: { title: string; rows: A
     <Panel title={title}>
       <div className="divide-y divide-slate-200">
         {rows.map(([label, value]) => (
-          <div className="flex justify-between gap-4 py-3" key={label}>
+          <div className="simple-row flex justify-between gap-4 py-3" key={label}>
             <span className="text-slate-600">{label}</span>
             <strong>{typeof value === 'number' ? UGX.format(value) : value}</strong>
           </div>
         ))}
         {totalLabel && (
-          <div className="flex justify-between gap-4 py-3">
+          <div className="simple-row flex justify-between gap-4 py-3">
             <span className="font-semibold">{totalLabel}</span>
             <strong>{UGX.format(total ?? 0)}</strong>
           </div>
@@ -568,7 +569,7 @@ function SimpleRows({ title, rows, totalLabel, total }: { title: string; rows: A
 }
 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
-  return <section className="rounded-md border border-slate-200 bg-white p-4 shadow-sm"><h3 className="mb-4 font-semibold">{title}</h3>{children}</section>
+  return <section className="panel rounded-md border border-slate-200 bg-white p-4 shadow-sm"><h3 className="mb-4 font-semibold">{title}</h3>{children}</section>
 }
 
 function Stat({ label, value }: { label: string; value: string }) {

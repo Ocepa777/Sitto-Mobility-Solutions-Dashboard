@@ -12,6 +12,40 @@
   transition: transform 180ms ease;
 }
 
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.header-brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  border: 0;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.page-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .nav-item {
   display: flex;
   width: 100%;
@@ -48,6 +82,10 @@
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
+.metric-card strong {
+  overflow-wrap: anywhere;
+}
+
 .metric-card:hover {
   border-color: #94a3b8;
 }
@@ -61,6 +99,21 @@
   padding: 0 0.75rem;
   color: #0f172a;
   outline: none;
+}
+
+.toolbar-grid,
+.content-grid,
+.metric-grid {
+  min-width: 0;
+}
+
+.chart-frame {
+  min-width: 0;
+}
+
+.simple-row span,
+.simple-row strong {
+  overflow-wrap: anywhere;
 }
 
 .input:focus {
@@ -126,8 +179,23 @@
 
 .data-table {
   width: 100%;
+  min-width: 48rem;
   border-collapse: collapse;
   font-size: 0.875rem;
+}
+
+.table-scroll {
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.table-scroll::after {
+  display: block;
+  padding-top: 0.5rem;
+  color: #64748b;
+  content: "Scroll sideways to view all columns";
+  font-size: 0.75rem;
 }
 
 .data-table th {
@@ -154,6 +222,157 @@
   .sidebar {
     top: 0;
     height: 100vh;
+    width: min(18rem, 86vw);
     box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-heading {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-main {
+    padding: 1rem;
+  }
+
+  .header-bar {
+    align-items: flex-start;
+    padding-inline: 0.75rem;
+  }
+
+  .brand-mark {
+    height: 2.25rem;
+    width: 2.25rem;
+    flex: 0 0 auto;
+  }
+
+  .header-subtitle {
+    display: none;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+    line-height: 1.18;
+  }
+
+  .export-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .export-actions .button-secondary {
+    width: 100%;
+    padding-inline: 0.5rem;
+  }
+
+  .metric-card {
+    min-height: 6.75rem;
+    padding: 0.875rem;
+  }
+
+  .metric-card strong {
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+
+  .panel {
+    padding: 0.875rem;
+  }
+
+  .chart-frame {
+    height: 17rem;
+  }
+
+  .data-table {
+    min-width: 44rem;
+    font-size: 0.8125rem;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 0.625rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-main {
+    padding: 0.75rem;
+  }
+
+  .header-bar {
+    gap: 0.5rem;
+  }
+
+  .header-brand {
+    gap: 0.5rem;
+  }
+
+  .header-brand h1 {
+    max-width: 11rem;
+  }
+
+  .header-bar > .button-secondary {
+    min-height: 2.25rem;
+    padding-inline: 0.6rem;
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+  }
+
+  .export-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  .button-secondary,
+  .button-primary {
+    font-size: 0.8125rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .input {
+    height: 2.75rem;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .simple-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .chart-frame {
+    height: 15rem;
+  }
+
+  .data-table {
+    min-width: 40rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .header-brand h1 {
+    max-width: 8.5rem;
+  }
+
+  .export-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .data-table {
+    min-width: 37rem;
   }
 }
